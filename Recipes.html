@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Complete Recipe Bank 🧁</title>
+    <style>
+        :root {
+            --bg: #fffafb;
+            --accent: #ffb2c3;
+            --text: #5d4037;
+            --card: #ffffff;
+            --shadow: rgba(255, 183, 178, 0.2);
+            --pink-link: #ff7e96;
+            --highlight: #ffdde1;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: row; /* Default for desktop */
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 280px;
+            background: #fff0f0;
+            padding: 20px;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            border-right: 2px solid var(--accent);
+            overflow-y: auto;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            color: #fd6a79;
+            font-size: 1.1rem;
+            margin-top: 25px;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 5px;
+        }
+
+        h1 {
+            color: #fd6a79;
+            font-size: 3.1rem;
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        .sidebar li {
+            margin: 8px 0;
+            font-size: 0.85rem;
+            line-height: 1.3;
+            color: #7d5a50;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover {
+            color: var(--pink-link);
+        }
+
+        .highlight-link {
+            color: var(--pink-link) !important;
+            font-weight: bold;
+            text-decoration: underline !important;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 0; /* Prevents flex items from overflowing */
+        }
+
+        .controls {
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            background: rgba(255, 250, 251, 0.9);
+            padding: 15px;
+            border-radius: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px var(--shadow);
+            max-width: 95%;
+        }
+
+        #searchBar {
+            padding: 10px 20px;
+            border: 2px solid var(--accent);
+            border-radius: 20px;
+            width: 100%;
+            margin-bottom: 10px;
+            outline: none;
+        }
+
+        .filter-btn {
+            border: none;
+            background: #ffebee;
+            padding: 6px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: #e57373;
+            transition: 0.3s;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .recipe-card {
+            background: var(--card);
+            border: 2px solid #fff5f5;
+            border-radius: 20px;
+            padding: 15px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            aspect-ratio: 1 / 1;
+            transition: all 0.4s ease;
+            scroll-margin-top: 150px;
+        }
+
+        .recipe-card.flash-highlight {
+            background-color: var(--highlight);
+            border-color: var(--pink-link);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--pink-link);
+        }
+
+        .emoji {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        .recipe-card h3 {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            line-height: 1.2;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+            margin-top: 5px;
+        }
+
+        .tag-display {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; /* Stack sidebar on top of content */
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 300px; /* Let it scroll but not take whole screen */
+                border-right: none;
+                border-bottom: 2px solid var(--accent);
+                position: relative;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .recipe-grid {
+                grid-template-columns: repeat(2, 1fr); /* Two cards side by side */
+                gap: 12px;
+            }
+
+            .recipe-card {
+                padding: 10px;
+            }
+
+            .emoji {
+                font-size: 1.8rem;
+            }
+
+            .controls {
+                position: relative; /* Stickiness on mobile can be buggy with the sidebar */
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body onclick="clearHighlights()">
+
+    <div class="sidebar" onclick="event.stopPropagation()">
+        <h2>Food Ideas</h2>
+        <ul>
+            <li><a href="#artichoke-boats" class="highlight-link">Artichoke Spaghetti Squash</a></li>
+            <li>Chicken Caesar (Wrap)</li>
+            <li>Dominican Sushi</li>
+            <li>Quesadillas</li>
+            <li>Nachos</li>
+            <li><a href="#corn-salad" class="highlight-link">Mexican Chicken Corn Salad</a></li>
+            <li>Halal Food</li>
+            <li><a href="#potato-soup" class="highlight-link">Baked Potato</a></li>
+            <li>Egg Sandwich</li>
+            <li><a href="#chicken-salad" class="highlight-link">Chicken Salad Sandwich</a></li>
+            <li><a href="#feta-meatballs" class="highlight-link">Greek Chicken with Meatballs</a></li>
+            <li>Tacos</li>
+            <li>Chicken Cutlet with Pasta</li>
+            <li>Pizza</li>
+            <li><a href="#beef-patties" class="highlight-link">Pastelitos</a></li>
+            <li><a href="#tortellini-soup" class="highlight-link">Tortellini Soup</a></li>
+            <li>Lasagna/Shells</li>
+            <li><a href="#stuffed-shells" class="highlight-link">White Veggie Lasagna/Shells</a></li>
+            <li><a href="#beef-patties" class="highlight-link">Beef Patty</a></li>
+            <li>Arepas</li>
+        </ul>
+
+        <h2>Sides</h2>
+        <ul>
+            <li>Carrots</li>
+            <li>Potato Salad</li>
+            <li><a href="#smashed-potatoes" class="highlight-link">Smashed Potato Salad</a></li>
+            <li>Greek Potatoes</li>
+            <li><a href="#mac-cheese" class="highlight-link">Mac n Cheese</a></li>
+            <li>Onion and Mushroom Pasta</li>
+            <li>Alfredo Pasta</li>
+            <li><a href="#zucchini-pasta" class="highlight-link">Zucchini Pasta</a></li>
+            <li><a href="#spanakopita" class="highlight-link">Yogurt Garlic Knots</a></li>
+        </ul>
+
+        <h2>Dessert</h2>
+        <ul>
+            <li>Frozen Yogurt with Honey Walnuts</li>
+            <li><a href="#sweet-potato-brownie" class="highlight-link">Sweet Potato Date Chocolate Cake</a></li>
+            <li>Sweet Potato/Yogurt Cinnabon Buns</li>
+        </ul>
+
+        <h2>Breakfast</h2>
+        <ul>
+            <li><a href="#carrot-muffins" class="highlight-link">Carrot Cake Muffin</a></li>
+            <li><a href="#beet-muffins" class="highlight-link">Sweet Potato Date Chocolate Muffin</a></li>
+            <li>Banana Bread</li>
+            <li><a href="#choco-cereal" class="highlight-link">Chocolate Cereal</a></li>
+            <li>Loaded Cereal</li>
+            <li>French Toast</li>
+            <li>Granola Bars</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1>My Recipe Bank</h1>
+
+        <div class="controls" onclick="event.stopPropagation()">
+            <input type="text" id="searchBar" placeholder="Search recipes..." onkeyup="filterAll()">
+            <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+            <button class="filter-btn" onclick="setFilter('vegetarian', this)">Veggie</button>
+            <button class="filter-btn" onclick="setFilter('soup', this)">Soups</button>
+            <button class="filter-btn" onclick="setFilter('breakfast', this)">Breakfast</button>
+            <button class="filter-btn" onclick="setFilter('dad', this)">Dad</button>
+            <button class="filter-btn" onclick="setFilter('meal', this)">Meal</button>
+            <button class="filter-btn" onclick="setFilter('side', this)">Side</button>
+            <button class="filter-btn" onclick="setFilter('dessert', this)">Dessert</button>
+            <button class="filter-btn" onclick="setFilter('bread', this)">Bread</button>
+            <button class="filter-btn" onclick="setFilter('sauce', this)">Sauce/Dips</button>
+        </div>
+
+        <div class="recipe-grid" id="recipeGrid">
+            <a id="choco-cereal" href="https://github.com/cbcj3000/Recipe-Book/raw/refs/heads/main/Chocolate%20Cereal.docx" target="_blank" class="recipe-card" data-tags="breakfast dad">
+                <div class="emoji">🥣</div>
+                <h3>Chocolate Cereal</h3>
+                <div class="tag-container"><span class="tag-display">Dad</span><span class="tag-display">Breakfast</span></div>
+            </a>
+
+            <a id="potato-soup" href="https://github.com/cbcj3000/Recipe-Book/raw/refs/heads/main/Loaded%20Potato%20Soup.docx" target="_blank" class="recipe-card" data-tags="soup meal">
+                <div class="emoji">🥔</div>
+                <h3>Loaded Potato Soup</h3>
+                <div class="tag-container"><span class="tag-display">Soup</span><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a id="corn-salad" href="https://www.instagram.com/reel/DK7zClIPzLi/" target="_blank" class="recipe-card" data-tags="meal">
+                <div class="emoji">🌽</div>
+                <h3>Chicken Street Corn Salad</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a href="https://plantyou.com/lentil-patties/" target="_blank" class="recipe-card" data-tags="vegetarian dad">
+                <div class="emoji">🌿</div>
+                <h3>Lentil Patties</h3>
+                <div class="tag-container"><span class="tag-display">Vegetarian</span><span class="tag-display">Dad</span></div>
+            </a>
+
+            <a href="https://www.sipandfeast.com/eggplant-parmigiana/" target="_blank" class="recipe-card" data-tags="vegetarian meal">
+                <div class="emoji">🍆</div>
+                <h3>Unbreaded Eggplant Parmigiana</h3>
+                <div class="tag-container"><span class="tag-display">Vegetarian</span><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a href="https://divascancook.com/carrot-cake-cupcakes-recipe-easy-moist/" target="_blank" class="recipe-card" data-tags="dessert">
+                <div class="emoji">🧁</div>
+                <h3>Carrot Cake Cupcakes</h3>
+                <div class="tag-container"><span class="tag-display">Dessert</span></div>
+            </a>
+
+            <a href="https://www.carbmanager.com/recipe-detail/ug:60d8ebdf-3f6a-350e-5ad8-333b64f66055/keto-cauliflower-soup-with-pancetta-and-ricotta" target="_blank" class="recipe-card" data-tags="soup meal">
+                <div class="emoji">🥣</div>
+                <h3>Keto Cauliflower Soup</h3>
+                <div class="tag-container"><span class="tag-display">Soup</span><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a href="https://www.dominicancooking.com/pan-de-agua-recipe" target="_blank" class="recipe-card" data-tags="dad bread">
+                <div class="emoji">🥖</div>
+                <h3>Pan de Agua</h3>
+                <div class="tag-container"><span class="tag-display">Bread</span><span class="tag-display">Dad</span></div>
+            </a>
+
+            <a href="https://www.epicurious.com/recipes/food/views/panna-cotta-14224" target="_blank" class="recipe-card" data-tags="dessert">
+                <div class="emoji">🍮</div>
+                <h3>Panna Cotta</h3>
+                <div class="tag-container"><span class="tag-display">Dessert</span></div>
+            </a>
+
+            <a id="artichoke-boats" href="https://pamelasalzman.com/spinach-artichoke-spaghetti-squash-boats-recipe/" target="_blank" class="recipe-card" data-tags="vegetarian meal sauce">
+                <div class="emoji">🛶</div>
+                <h3>Artichoke Spaghetti Squash Boats</h3>
+                <div class="tag-container"><span class="tag-display">Vegetarian</span><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a id="beet-muffins" href="https://www.instagram.com/reel/DSDrzxvk6_q/" target="_blank" class="recipe-card" data-tags="breakfast">
+                <div class="emoji">🫐</div>
+                <h3>Beet Chocolate Muffin</h3>
+                <div class="tag-container"><span class="tag-display">Breakfast</span></div>
+            </a>
+
+            <a id="sweet-potato-brownie" href="https://www.instagram.com/reel/DUDwtW0DZU6/" target="_blank" class="recipe-card" data-tags="dad dessert ">
+                <div class="emoji">🍠</div>
+                <h3>Sweet Potato Brownie</h3>
+                <div class="tag-container"><span class="tag-display">Dad</span><span class="tag-display">Dessert</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/DRclk9jDNax/" target="_blank" class="recipe-card" data-tags="side vegetarian">
+                <div class="emoji">🟢</div>
+                <h3>Pea Fritters</h3>
+                <div class="tag-container"><span class="tag-display">Side</span><span class="tag-display">Vegetarian</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/DJKAnMzxXTK/" target="_blank" class="recipe-card" data-tags="dad">
+                <div class="emoji">🥤</div>
+                <h3>Gatorade</h3>
+                <div class="tag-container"><span class="tag-display">Dad</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/DBpCeBHRHBK/" target="_blank" class="recipe-card" data-tags="breakfast">
+                <div class="emoji">🥕</div>
+                <h3>Healthy Carrot Cake</h3>
+                <div class="tag-container"><span class="tag-display">Breakfast</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/DB4f4i0sP8E/" target="_blank" class="recipe-card" data-tags="dessert">
+                <div class="emoji">🥨</div>
+                <h3>Cinnamon Pretzels</h3>
+                <div class="tag-container"><span class="tag-display">Dessert</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/C-BH2LVPdmS/" target="_blank" class="recipe-card" data-tags="sauce">
+                <div class="emoji">🍗</div>
+                <h3>Chicken Sauces</h3>
+                <div class="tag-container"><span class="tag-display">Sauce</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/C9KjerzpDm9/" target="_blank" class="recipe-card" data-tags="meal vegetarian">
+                <div class="emoji">🍄</div>
+                <h3>Greens and Mushroom Lasagna</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span><span class="tag-display">Vegetarian</span></div>
+            </a>
+
+            <a id="stuffed-shells" href="https://www.instagram.com/reel/C6wlJqRPyi1/" target="_blank" class="recipe-card" data-tags="meal vegetarian">
+                <div class="emoji">🐚</div>
+                <h3>Creamy Veggie Stuffed Shells</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span><span class="tag-display">Vegetarian</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/C6AX5dqJTvk/" target="_blank" class="recipe-card" data-tags="meal vegetarian">
+                <div class="emoji">🧀</div>
+                <h3>Cheesy Mushroom Lasagna</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span><span class="tag-display">Vegetarian</span></div>
+            </a>
+
+            <a id="carrot-muffins" href="https://www.instagram.com/p/C4svdyjOdHh/" target="_blank" class="recipe-card" data-tags="breakfast">
+                <div class="emoji">🥕</div>
+                <h3>Carrot Cake Muffins</h3>
+                <div class="tag-container"><span class="tag-display">Breakfast</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/C0hpP8YPGZk/" target="_blank" class="recipe-card" data-tags="sauce vegetarian">
+                <div class="emoji">🍯</div>
+                <h3>Ricotta Balsamic Dip</h3>
+                <div class="tag-container"><span class="tag-display">Sauce</span><span class="tag-display">Vegetarian</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/C1Pe-E7r3eR/" target="_blank" class="recipe-card" data-tags="dessert">
+                <div class="emoji">🍥</div>
+                <h3>Cinnamon Rolls</h3>
+                <div class="tag-container"><span class="tag-display">Dessert</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/CsM83exAuZs/" target="_blank" class="recipe-card" data-tags="meal">
+                <div class="emoji">🇵🇪</div>
+                <h3>Peruvian Chicken</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/CpI2Swsq8-g/" target="_blank" class="recipe-card" data-tags="dad side vegetarian">
+                <div class="emoji">🧇</div>
+                <h3>Platano Waffle</h3>
+                <div class="tag-container"><span class="tag-display">Dad</span><span class="tag-display">Side</span><span class="tag-display">Vegetarian</span></div>
+            </a>
+
+            <a id="mac-cheese" href="https://www.instagram.com/reel/Cj5t-JNjnQd/" target="_blank" class="recipe-card" data-tags="meal side vegetarian">
+                <div class="emoji">🧀</div>
+                <h3>Easy Mac n Cheese</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span><span class="tag-display">Side</span><span class="tag-display">Vegetarian</span></div>
+            </a>
+
+            <a id="beef-patties" href="https://www.instagram.com/reel/ChQVLSpDHBl/" target="_blank" class="recipe-card" data-tags="meal">
+                <div class="emoji">🥟</div>
+                <h3>Beef Patties</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reel/CgH3vvupO0m/" target="_blank" class="recipe-card" data-tags="dessert dad">
+                <div class="emoji">🍋</div>
+                <h3>Italian Lemon Ice Cream</h3>
+                <div class="tag-container"><span class="tag-display">Dad</span><span class="tag-display">Dessert</span></div>
+            </a>
+
+            <a href="https://www.tiktok.com/@benmoore_coach/video/7550556739423292690" target="_blank" class="recipe-card" data-tags="dessert dad">
+                <div class="emoji">🍎</div>
+                <h3>Apple Chocolate Cake</h3>
+                <div class="tag-container"><span class="tag-display">Dad</span><span class="tag-display">Dessert</span></div>
+            </a>
+
+            <a href="https://www.tiktok.com/@feelgoodfoodie/video/7333064161355697451" target="_blank" class="recipe-card" data-tags="meal side vegetarian soup">
+                <div class="emoji">🍅</div>
+                <h3>Feta Tomato Soup</h3>
+                <div class="tag-container"><span class="tag-display">Soup</span><span class="tag-display">Meal</span><span class="tag-display">Side</span><span class="tag-display">Vegetarian</span></div>
+            </a>
+
+            <a href="https://feelgoodfoodie.net/recipe/banana-coconut-cookies/" target="_blank" class="recipe-card" data-tags="dessert dad">
+                <div class="emoji">🍌</div>
+                <h3>Banana Coconut Cookies</h3>
+                <div class="tag-container"><span class="tag-display">Dad</span><span class="tag-display">Dessert</span></div>
+            </a>
+
+            <a href="https://salimaskitchen.com/plantain-soup/" target="_blank" class="recipe-card" data-tags="meal side soup">
+                <div class="emoji">🥣</div>
+                <h3>Plantano Soup</h3>
+                <div class="tag-container"><span class="tag-display">Soup</span><span class="tag-display">Meal</span><span class="tag-display">Side</span></div>
+            </a>
+
+            <a id="tortellini-soup" href="https://github.com/cbcj3000/Recipe-Book/raw/refs/heads/main/Creamy%20Sausage%20Tortellini%20Soup.docx" target="_blank" class="recipe-card" data-tags="meal soup">
+                <div class="emoji">🍲</div>
+                <h3>Tortellini Soup</h3>
+                <div class="tag-container"><span class="tag-display">Soup</span><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a id="feta-meatballs" href="https://nourishedbynic.com/healthy-greek-turkey-meatballs-with-feta/" target="_blank" class="recipe-card" data-tags="meal">
+                <div class="emoji">🧆</div>
+                <h3>Feta Turkey Meatballs</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reels/DLoL3ujs_1W/" target="_blank" class="recipe-card" data-tags="dessert">
+                <div class="emoji">🫐</div>
+                <h3>Chocolate Blueberries</h3>
+                <div class="tag-container"><span class="tag-display">Dessert</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reels/DLAlNbFRLVn/" target="_blank" class="recipe-card" data-tags="side vegetarian">
+                <div class="emoji">🌮</div>
+                <h3>Tortilla Shells</h3>
+                <div class="tag-container"><span class="tag-display">Side</span><span class="tag-display">Vegetarian</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reels/DK0SV1AMvpP/" target="_blank" class="recipe-card" data-tags="dad">
+                <div class="emoji">🍫</div>
+                <h3>Homemade Chocolate Chips</h3>
+                <div class="tag-container"><span class="tag-display">Dad</span></div>
+            </a>
+
+            <a href="https://www.instagram.com/reels/DKNofQ9hFCo/" target="_blank" class="recipe-card" data-tags="dessert dad">
+                <div class="emoji">🍨</div>
+                <h3>Pistachio Icecream</h3>
+                <div class="tag-container"><span class="tag-display">Dad</span><span class="tag-display">Dessert</span></div>
+            </a>
+
+            <a id="zucchini-pasta" href="https://themodernproper.com/creamy-zucchini-pasta" target="_blank" class="recipe-card" data-tags="meal vegetarian">
+                <div class="emoji">🥒</div>
+                <h3>Zuccini Pasta</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span><span class="tag-display">Vegetarian</span></div>
+            </a>
+
+            <a id="spanakopita" href="https://www.instagram.com/reels/DJQ9R9NyKZ2/" target="_blank" class="recipe-card" data-tags="side vegetarian">
+                <div class="emoji">🥬</div>
+                <h3>Spanakopita</h3>
+                <div class="tag-container"><span class="tag-display">Side</span><span class="tag-display">Vegetarian</span></div>
+            </a>
+
+            <a id="chicken-salad" href="https://www.fromvalerieskitchen.com/napa-almond-chicken-salad-panera-copycat/" target="_blank" class="recipe-card" data-tags="meal">
+                <div class="emoji">🥪</div>
+                <h3>Napa Almond Chicken Salad</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a id="smashed-potatoes" href="https://hungryhappens.net/crispy-smashed-potato-salad/" target="_blank" class="recipe-card" data-tags="side">
+                <div class="emoji">🥔</div>
+                <h3>Smashed Potato Salad</h3>
+                <div class="tag-container"><span class="tag-display">Side</span></div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let currentFilter = 'all';
+
+        window.addEventListener('hashchange', function () {
+            clearHighlights();
+            const id = window.location.hash.substring(1);
+            const card = document.getElementById(id);
+            if (card) {
+                card.classList.add('flash-highlight');
+                // Auto-scroll to the card on mobile
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+
+        function clearHighlights() {
+            document.querySelectorAll('.recipe-card').forEach(card => card.classList.remove('flash-highlight'));
+        }
+
+        function setFilter(tag, btn) {
+            currentFilter = tag;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterAll();
+        }
+
+        function filterAll() {
+            let query = document.getElementById('searchBar').value.toLowerCase();
+            let cards = document.querySelectorAll('.recipe-card');
+            cards.forEach(card => {
+                let text = card.innerText.toLowerCase();
+                let tags = card.getAttribute('data-tags') || "";
+                let matchesSearch = text.includes(query);
+                let matchesFilter = (currentFilter === 'all' || tags.split(' ').includes(currentFilter));
+                card.classList.toggle('hidden', !matchesSearch || !matchesFilter);
+            });
+        }
+    </script>
+</body>
+
+</html>
