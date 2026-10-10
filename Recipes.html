@@ -168,6 +168,66 @@
             box-shadow: 0 0 20px var(--pink-link);
         }
 
+        .tiktok-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .tiktok-modal.show {
+            display: flex;
+        }
+
+        .tiktok-modal-content {
+            background: white;
+            border: 3px solid #8b0000;
+            border-radius: 20px;
+            padding: 24px 28px;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .tiktok-modal-content p {
+            color: var(--text);
+            font-size: 1rem;
+            line-height: 1.5;
+            margin: 0 0 18px;
+        }
+
+        .tiktok-modal-content strong {
+            color: #8b0000;
+            font-weight: 900;
+        }
+
+        .tiktok-modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .tiktok-modal-buttons button {
+            border: none;
+            border-radius: 12px;
+            padding: 10px 18px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #tiktokCancelBtn {
+            background: #f3d7d7;
+            color: #5d4037;
+        }
+
+        #tiktokConfirmBtn {
+            background: #8b0000;
+            color: white;
+        }
+
         .emoji {
             font-size: 2.5rem;
             margin-bottom: 8px;
@@ -255,6 +315,12 @@
             <li><a href="#artichoke-boats" class="highlight-link">Artichoke Spaghetti Squash</a></li>
             <li>Chicken Caesar (Wrap)</li>
             <li>Dominican Sushi</li>
+            <li><a href="#leek-pot-pie" class="highlight-link">Leek Pot Pie</a></li>
+            <li><a href="#garlic-lemon-chicken-green-beans" class="highlight-link">Garlic Lemon Chicken with Green Beans</a></li>
+            <li><a href="#lebanese-chicken-potato" class="highlight-link">Lebanese Chicken & Potato</a></li>
+            <li><a href="#crispy-chicken-avocado-dip" class="highlight-link">Crispy Chicken & Crispy Chickpeas on Avocado Dip</a></li>
+            <li><a href="#pastelon" class="highlight-link">Pastelon</a></li>
+            <li><a href="#crispy-garlic-thyme-pasta" class="highlight-link">Crispy Garlic & Thyme Pasta</a></li>
             <li><a href="#mashed-potato-steak-carrots" class="highlight-link">Mashed Potato, Steak & Carrots</a></li>
             <li><a href="https://www.instagram.com/reels/DZLrkyoNuLA/" class="highlight-link" target="_blank">Lebanon Batata Sandwich</a></li>
             <li><a href="https://www.instagram.com/reels/DZQGDeRsIex/" class="highlight-link" target="_blank">Pea & Ricotta Filo Rolls</a></li>
@@ -285,6 +351,8 @@
         <ul>
             <li>Carrots</li>
             <li><a href="#garlic-herb-carrots" class="highlight-link">Garlic Herb Carrots</a></li>
+            <li><a href="#garlic-lemon-green-beans" class="highlight-link">Garlic Lemon Greenbeans</a></li>
+            <li><a href="#yuca-al-mojo" class="highlight-link">Yuca al Mojo</a></li>
             <li>Beets</li>
             <li>Peas</li>
             <li>Cilantro Rice</li>
@@ -314,6 +382,9 @@
             <li><a href="#chickfila-breakfast-burrito" class="highlight-link">Chick-fil-A Breakfast Burrito</a></li>
             <li><a href="#carrot-muffins" class="highlight-link">Carrot Cake Muffin</a></li>
             <li><a href="#beet-muffins" class="highlight-link">Sweet Potato Date Chocolate Muffin</a></li>
+            <li><a href="#blueberry-loaf" class="highlight-link">Blueberry Loaf</a></li>
+            <li><a href="#maple-sage-breakfast-patty" class="highlight-link">Maple Sage Breakfast Patty</a></li>
+            <li><a href="#sweet-potato-cereal" class="highlight-link">Sweet Potato Cereal</a></li>
             <li>Banana Bread</li>
             <li><a href="#choco-cereal" class="highlight-link">Chocolate Cereal</a></li>
             <li><a href="https://www.tiktok.com/@theelectrictribe/video/7620546894888062241" class="highlight-link" target="_blank">Platano Porridge</a></li>
@@ -321,6 +392,16 @@
             <li>French Toast</li>
             <li>Granola Bars</li>
         </ul>
+    </div>
+
+    <div id="tiktokConfirmModal" class="tiktok-modal" aria-modal="true" role="dialog">
+        <div class="tiktok-modal-content">
+            <p>This link will send you to <strong>TikTok</strong>. Is that okay?</p>
+            <div class="tiktok-modal-buttons">
+                <button id="tiktokCancelBtn" type="button">No</button>
+                <button id="tiktokConfirmBtn" type="button">Yes</button>
+            </div>
+        </div>
     </div>
 
     <div class="main-content">
@@ -345,6 +426,18 @@
                 <div class="emoji">🥣</div>
                 <h3>Chocolate Cereal</h3>
                 <div class="tag-container"><span class="tag-display">Dad</span><span class="tag-display">Breakfast</span></div>
+            </a>
+
+            <a id="blueberry-loaf" href="https://www.instagram.com/reel/Db8FMelNB_1/" target="_blank" class="recipe-card" data-tags="breakfast">
+                <div class="emoji">🫐</div>
+                <h3>Blueberry Loaf</h3>
+                <div class="tag-container"><span class="tag-display">Breakfast</span></div>
+            </a>
+
+            <a id="leek-pot-pie" href="https://www.instagram.com/reel/DdRkYaqBs71/" target="_blank" class="recipe-card" data-tags="meal">
+                <div class="emoji">🥧</div>
+                <h3>Leek Pot Pie</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span></div>
             </a>
 
             <a id="potato-soup" href="https://github.com/cbcj3000/Recipe-Book/raw/refs/heads/main/Loaded%20Potato%20Soup.docx" target="_blank" class="recipe-card" data-tags="soup meal">
@@ -567,9 +660,21 @@
                 <div class="tag-container"><span class="tag-display">Breakfast</span></div>
             </a>
 
-            <a id="platano-porridge" href="https://www.tiktok.com/@theelectrictribe/video/7620546894888062241" target="_blank" class="recipe-card" data-tags="breakfast">
+            <a id="platano-porridge" href="https://www.tiktok.com/@theelectrictribe/video/7620546894888062241" target="_blank" class="recipe-card" data-tags="breakfast" data-confirm-tiktok="true">
                 <div class="emoji">🥣</div>
                 <h3>Platano Porridge</h3>
+                <div class="tag-container"><span class="tag-display">Breakfast</span></div>
+            </a>
+
+            <a id="maple-sage-breakfast-patty" href="https://www.instagram.com/reels/Dd6xrM_TjM6/" target="_blank" class="recipe-card" data-tags="breakfast">
+                <div class="emoji">🥞</div>
+                <h3>Maple Sage Breakfast Patty</h3>
+                <div class="tag-container"><span class="tag-display">Breakfast</span></div>
+            </a>
+
+            <a id="sweet-potato-cereal" href="https://www.instagram.com/reels/Da8P8e8qFqJ/" target="_blank" class="recipe-card" data-tags="breakfast">
+                <div class="emoji">🍠</div>
+                <h3>Sweet Potato Cereal</h3>
                 <div class="tag-container"><span class="tag-display">Breakfast</span></div>
             </a>
 
@@ -624,6 +729,30 @@
             <a id="feta-meatballs" href="https://nourishedbynic.com/healthy-greek-turkey-meatballs-with-feta/" target="_blank" class="recipe-card" data-tags="meal">
                 <div class="emoji">🧆</div>
                 <h3>Feta Turkey Meatballs</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a id="lebanese-chicken-potato" href="https://www.instagram.com/lolajay_yum/reel/DdjiT0_MuHj/?hl=en" target="_blank" class="recipe-card" data-tags="meal">
+                <div class="emoji">🍗</div>
+                <h3>Lebanese Chicken & Potato</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a id="crispy-chicken-avocado-dip" href="https://www.instagram.com/p/Dcl-SMqDH76/?hl=en&img_index=9" target="_blank" class="recipe-card" data-tags="meal">
+                <div class="emoji">🥑</div>
+                <h3>Crispy Chicken & Crispy Chickpeas on Avocado Dip</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a id="pastelon" href="https://www.nataknowsbest.com/puerto-rican-pastelon/" target="_blank" class="recipe-card" data-tags="meal">
+                <div class="emoji">🥟</div>
+                <h3>Pastelon</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span></div>
+            </a>
+
+            <a id="crispy-garlic-thyme-pasta" href="https://www.instagram.com/reels/Dd3uwZTtCJa/" target="_blank" class="recipe-card" data-tags="meal">
+                <div class="emoji">🍝</div>
+                <h3>Crispy Garlic & Thyme Pasta</h3>
                 <div class="tag-container"><span class="tag-display">Meal</span></div>
             </a>
 
@@ -684,6 +813,18 @@
             <a id="garlic-herb-carrots" href="https://damndelicious.net/2018/03/31/garlic-herb-carrots/" target="_blank" class="recipe-card" data-tags="side">
                 <div class="emoji">🥕</div>
                 <h3>Garlic Herb Carrots</h3>
+                <div class="tag-container"><span class="tag-display">Side</span></div>
+            </a>
+
+            <a id="garlic-lemon-chicken-green-beans" href="https://www.youtube.com/watch?v=1JCq9PwGuCQ" target="_blank" class="recipe-card" data-tags="meal side">
+                <div class="emoji">🍗</div>
+                <h3>Garlic Lemon Chicken with Green Beans</h3>
+                <div class="tag-container"><span class="tag-display">Meal</span><span class="tag-display">Side</span></div>
+            </a>
+
+            <a id="yuca-al-mojo" href="https://mydominicanrecipes.com/yuca-encebollada-con-mojo/" target="_blank" class="recipe-card" data-tags="side">
+                <div class="emoji">🥔</div>
+                <h3>Yuca al Mojo</h3>
                 <div class="tag-container"><span class="tag-display">Side</span></div>
             </a>
 
@@ -767,6 +908,32 @@
                 card.classList.toggle('hidden', !matchesSearch || !matchesFilter);
             });
         }
+
+        const tiktokModal = document.getElementById('tiktokConfirmModal');
+        const tiktokConfirmBtn = document.getElementById('tiktokConfirmBtn');
+        const tiktokCancelBtn = document.getElementById('tiktokCancelBtn');
+        let pendingTiktokLink = null;
+
+        document.querySelectorAll('a[data-confirm-tiktok="true"]').forEach(link => {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                pendingTiktokLink = this.href;
+                tiktokModal.classList.add('show');
+            });
+        });
+
+        tiktokConfirmBtn.addEventListener('click', function () {
+            if (pendingTiktokLink) {
+                window.open(pendingTiktokLink, '_blank');
+            }
+            tiktokModal.classList.remove('show');
+            pendingTiktokLink = null;
+        });
+
+        tiktokCancelBtn.addEventListener('click', function () {
+            tiktokModal.classList.remove('show');
+            pendingTiktokLink = null;
+        });
     </script>
 </body>
 
